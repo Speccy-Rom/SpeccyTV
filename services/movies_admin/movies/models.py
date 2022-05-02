@@ -86,3 +86,38 @@ class FilmWork(TimeStampedModel):
 
     def __str__(self):
         return self.title
+
+
+class RoleType(models.TextChoices):
+    ACTOR = ('actor', _('Actor'))
+    WRITER = ('writer', _('Writer'))
+    DIRECTOR = ('director', _('Director'))
+
+
+class PersonFilmWork(models.Model):
+    id = models.UUIDField(_('id'), primary_key=True, default=uuid.uuid4, editable=False)
+    film_work = models.ForeignKey('movies.FilmWork', on_delete=models.CASCADE)
+    person = models.ForeignKey('movies.Person', on_delete=models.CASCADE)
+    role = models.TextField(_('Role'), choices=RoleType.choices)
+    created = models.DateTimeField(_('Created'), auto_created=True, auto_now_add=True)
+
+    class Meta:
+        verbose_name = _('Person')
+        verbose_name_plural = _('Persons')
+        db_table = f'"content"."person_film_work"'
+        managed = False
+        unique_together = ('film_work', 'person', 'role')
+
+
+class GenreFilmWork(models.Model):
+    id = models.UUIDField(_('id'), primary_key=True, default=uuid.uuid4, editable=False)
+    film_work = models.ForeignKey('movies.FilmWork', on_delete=models.CASCADE)
+    genre = models.ForeignKey('movies.Genre', on_delete=models.CASCADE)
+    created = models.DateTimeField(_('Created'), auto_created=True, auto_now_add=True)
+
+    class Meta:
+        verbose_name = _('Genre')
+        verbose_name_plural = _('Genres')
+        db_table = f'"content"."genre_film_work"'
+        managed = False
+        unique_together = ('film_work', 'genre')
