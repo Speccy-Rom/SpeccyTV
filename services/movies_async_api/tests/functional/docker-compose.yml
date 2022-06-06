@@ -1,0 +1,50 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: ../../
+      dockerfile: Dockerfile.dev
+    image: api-image
+    container_name: api
+    env_file:
+      - ./.env.test
+    ports:
+      - "8000:8000"
+    depends_on:
+      - elasticsearch
+      - redis
+    restart: always
+
+  tests:
+    image: api-image
+    container_name: tests
+    entrypoint: >
+      sh -c "pip install --upgrade pip && pip install -r /usr/src/app/tests/functional/requirements.txt
+      && python /usr/src/app/tests/functional/wait_for_es.py
+      && python /usr/src/app/tests/functional/wait_for_redis.py
+      && pytest /usr/src/app/tests/functional/src"
+    env_file:
+      - ./.env.test
+    depends_on:
+      - api
+      - elasticsearch
+      - redis
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
+    container_name: elasticsearch
+    environment:
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - discovery.type=single-node
+      - logger.level=WARN
+    ports:
+      - "9200:9200"
+    restart: always
+
+  redis:
+    image: redis:6.2.6-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: always
