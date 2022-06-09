@@ -1,0 +1,4 @@
+{"index": {"_id": "6068f16b-9b33-4cb1-a477-81c334ff9542"}}
+{"id":"6068f16b-9b33-4cb1-a477-81c334ff9542","name":"Mark Hamill","roles":["actor","director"],"films":[{"id":"e2697e31-18c0-4a82-a2e2-6e4148191566","title":"Star Wars: Episode IV - A New Hope","type":"movie","rating":8.6}]}
+{"index": {"_id": "12c68e9e-607e-4624-ae6a-5104a3d04ee0"}}
+{"id":"12c68e9e-607e-4624-ae6a-5104a3d04ee0","name":"Harrison Ford","roles":["actor","director"],"films":[{"id":"707eed57-5834-4be8-9a5c-800d3daa227c","title":"Star Wars: Episode I - A New Hope","type":"movie","rating":8.6}]}
