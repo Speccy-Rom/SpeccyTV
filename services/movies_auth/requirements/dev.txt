@@ -1,0 +1,4 @@
+-r base.txt
+pytest==6.2.5
+mimesis==5.1.0
+furl==2.1.3
