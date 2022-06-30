@@ -1,0 +1,273 @@
+swagger: "2.0"
+info:
+  description: "Auth Server"
+  version: "1.0.0"
+  title: "Swagger Doc"
+
+definitions:
+  UUID:
+    type: "string"
+    format: "uuid"
+  UUIDs:
+    type: "array"
+    items:
+      $ref: "#/definitions/UUID"
+  User:
+    properties:
+      uuid:
+        $ref: "#/definitions/UUID"
+      email:
+        example: "You email"
+        type: "string"
+      name:
+        example: "Mike777"
+        type: "string"
+      password:
+        example: "password"
+        minLength: 6
+        type: "string"
+    required:
+      - "email"
+      - "login"
+      - "password"
+    type: "object"
+  UserRegistrationInfo:
+    properties:
+      email:
+        example: "You email"
+        type: "string"
+      name:
+        example: "Mike777"
+        type: "string"
+      password:
+        example: "password"
+        minLength: 6
+        type: "string"
+    required:
+      - "email"
+      - "name"
+      - "password"
+    type: "object"
+  UserInfo:
+    properties:
+      uuid:
+        $ref: "#/definitions/UUID"
+      email:
+        example: "You email"
+        type: "string"
+      name:
+        example: "Mike777"
+        type: "string"
+    required:
+      - "uuid"
+      - "email"
+      - "name"
+    type: "object"
+  UserInfoPatch:
+    properties:
+      email:
+        example: "You email"
+        type: "string"
+      name:
+        example: "Mike777"
+        type: "string"
+    type: "object"
+  NewPasswordInfo:
+    properties:
+      new_password:
+        example: "New password"
+        minLength: 6
+        type: "string"
+      old_password:
+        example: "Old password"
+        type: "string"
+    required:
+      - "old_password"
+      - "new_password"
+    type: "object"
+  UserSignIn:
+    type: "object"
+    properties:
+      logined_by:
+        type: "string"
+      user_agent:
+        type: "string"
+      user_device_type:
+        type: "string"
+  JWT:
+    type: "string"
+    example: "Bearer <JWT>"
+  Login:
+    type: "object"
+    required:
+      - "email"
+      - "password"
+    properties:
+      email:
+        type: "string"
+        example: "You email"
+      password:
+        type: "string"
+        example: "Top secret"
+  Tokens:
+    type: "object"
+    properties:
+      access_token:
+        type: "string"
+        description: "The access token"
+      refresh_token:
+        type: "string"
+        description: "The refresh token"
+  PermissionInfo:
+    properties:
+      uuid:
+        $ref: '#/definitions/UUID'
+      name:
+        example: "pro_content_read"
+        type: "string"
+      description:
+        example: "Read access to pro content"
+        type: "string"
+    required:
+      - "uuid"
+      - "name"
+      - "description"
+    type: "object"
+  NewPermissionInfo:
+      properties:
+        name:
+          example: "pro_content_read"
+          type: "string"
+        description:
+          example: "Read access to pro content"
+          type: "string"
+      required:
+        - "name"
+      type: "object"
+  PermissionInfoPatch:
+      properties:
+        description:
+          example: "Read access to pro content"
+          type: "string"
+      type: "object"
+  ItemToAddByName:
+    properties:
+      name:
+        example: "some_name"
+        type: "string"
+    required:
+      - "name"
+    type: "object"
+  ValidationInfo:
+      properties:
+        valid:
+          type: "boolean"
+      required:
+        - "valid"
+      type: "object"
+  RoleInfo:
+    properties:
+      uuid:
+        $ref: "#/definitions/UUID"
+      name:
+        example: "pro"
+        type: "string"
+      description:
+        example: "Pro user with paid account"
+        type: "string"
+      permissions:
+        type: "array"
+        items:
+          $ref: "#/definitions/PermissionInfo"
+    required:
+      - "uuid"
+      - "name"
+      - "description"
+      - "permissions"
+    type: "object"
+  NewRoleInfo:
+    properties:
+      name:
+        example: "pro"
+        type: "string"
+      description:
+        example: "Pro user with paid account"
+        type: "string"
+    required:
+      - "name"
+    type: "object"
+  RoleInfoPatch:
+    properties:
+      name:
+        example: "pro"
+        type: "string"
+      description:
+        example: "Pro user with paid account"
+        type: "string"
+    type: "object"
+  SignUp:
+    type: "object"
+    required:
+      - "email"
+      - "password"
+    properties:
+      email:
+        type: "string"
+        example: "You email"
+      password:
+        type: "string"
+        example: "Top secret"
+        minLength: 6
+  PatchLogin:
+    type: "object"
+    required:
+      - "login"
+    properties:
+      login:
+        type: "string"
+        example: "New login"
+  PatchPassword:
+    type: "object"
+    required:
+      - "old_password"
+      - "new_password"
+    properties:
+      old_password:
+        type: "string"
+        example: "Old password"
+      new_password:
+        type: "string"
+        example: "New password"
+        minLength: 6
+  AccessCheck:
+    type: "object"
+    properties:
+      access:
+        type: "boolean"
+        default: false
+        description: "True or False"
+  Roles:
+    type: "object"
+    properties:
+      roles:
+        type: "array"
+        items:
+          type: "string"
+  Role:
+    type: "object"
+    properties:
+      role:
+        type: "string"
+  PatchRole:
+    type: "object"
+    required:
+      - "old_role"
+      - "new_role"
+    properties:
+      old_role:
+        type: "string"
+        example: "Old role"
+      new_role:
+        type: "string"
+        example: "New role"
+        
