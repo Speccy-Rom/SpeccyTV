@@ -58,8 +58,8 @@ class UserResource(Resource):
         # since we introduced Users table partitioning by id hash, we can't have unique constraint
         # on email for the whole table anymore, so here we must explicitly check first if user
         # with such email already exists
-        existing_user = User.query.filter_by(email=user_data['email']).first()
-        if existing_user:
+
+        if existing_user := User.query.filter_by(email=user_data['email']).first():
             return abort(HTTPStatus.CONFLICT)
         new_user = User(**user_data)
         db.session.add(new_user)
