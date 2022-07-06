@@ -1,3 +1,4 @@
+import contextlib
 import json
 from datetime import timedelta
 from functools import wraps
@@ -16,12 +17,9 @@ def _get_user_id(fn, args, kwargs):
         return user_id
     if args:
         argspec = getfullargspec(fn)
-        try:
+        with contextlib.suppress(ValueError):
             user_id_index = argspec.args.index(USER_ID_ARG_NAME)
             return args[user_id_index]
-        except ValueError:
-            pass
-
         self_arg = args[0]
         if type(self_arg) == models.users.User:
             return self_arg.id
@@ -60,7 +58,7 @@ def cache_invalidate(key_suffix: str):
 
 
 def _get_key(user_id, key_suffix):
-    return '{}_{}'.format(user_id, key_suffix)
+    return f'{user_id}_{key_suffix}'
 
 
 def get_item(user_id, key_suffix):

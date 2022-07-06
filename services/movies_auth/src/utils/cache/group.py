@@ -21,7 +21,7 @@ def cache_invalidate_group(suffix: str):
     def wrapper(fn):
         @wraps(fn)
         def decorator(*args, **kwargs):
-            delete_items(match='*_'+suffix)
+            delete_items(match=f'*_{suffix}')
             return fn(*args, **kwargs)
 
         return decorator

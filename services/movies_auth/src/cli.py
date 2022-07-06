@@ -60,11 +60,8 @@ def init(ctx, with_superuser):
         superuser_role.add_permission(superuser_permission)
         db.session.commit()
 
-    if with_superuser:
-        # We had some problems with prompt options calling ctx.invoke(create_superuser), so
-        # as a quick dirty workaround here we call create_superuser via os.system()
-        if os.system('flask superuser create'):
-            raise RuntimeError('"superuser create" failed')
+    if with_superuser and os.system('flask superuser create'):
+        raise RuntimeError('"superuser create" failed')
 
     print('App initialization done.')
 
@@ -91,8 +88,8 @@ def create_superuser(email, first_name, last_name, password):
             raise RuntimeError("Superuser role not found. You must create it first by 'flask app init'")
         new_user.add_role(superuser_role)
         db.session.commit()
-    except sqlalchemy.exc.IntegrityError:
-        raise RuntimeError("Such superuser can't be created")
+    except sqlalchemy.exc.IntegrityError as e:
+        raise RuntimeError("Such superuser can't be created") from e
 
     print('Superuser created!')
     return 0
@@ -104,10 +101,10 @@ def delete_superuser(email):
     """Delete superuser"""
     user = User.query.filter_by(email=email).first()
     if not user:
-        print('Superuser <{}> not found'.format(email))
+        print(f'Superuser <{email}> not found')
         return 0
     if not user.check_permissions({'any': [PermissionNames.ALL_ALL]}):
-        print('User <{}> is not superuser'.format(email))
+        print(f'User <{email}> is not superuser')
         return 1
     db.session.delete(user)
     db.session.commit()
