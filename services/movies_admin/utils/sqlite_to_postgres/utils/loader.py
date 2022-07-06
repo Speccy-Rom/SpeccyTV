@@ -31,20 +31,14 @@ class SQLiteLoader():
     @staticmethod
     def dict_factory(cursor: sqlite3.Cursor, row: tuple) -> dict:
         """Factory for strings as dict."""
-        d = {}
-        for idx, col in enumerate(cursor.description):
-            d[col[0]] = row[idx]
-        return d
+        return {col[0]: row[idx] for idx, col in enumerate(cursor.description)}
 
     def load_writers_names(self) -> dict:
         """Getting a dict of all the writers."""
-        writers = {}
         SQL = """
         SELECT DISTINCT id, name FROM writers
         """
-        for writer in self.conn.execute(SQL):
-            writers[writer['id']] = writer
-        return writers
+        return {writer['id']: writer for writer in self.conn.execute(SQL)}
 
     def _transform_row(self, row: dict, writers: dict) -> dict:
         """Converting data from SQLite."""

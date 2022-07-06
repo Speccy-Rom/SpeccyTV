@@ -11,7 +11,6 @@ from utils.cache.group import cache_invalidate_group, delete_items
 def create_user_permission_partitions(target, connection, **kw):
     for cmd in get_create_user_permission_partitions_cmds(config.DB_USERS_PARTITIONS_NUM):
         connection.execute(cmd)
-    pass
 
 
 user_permission = db.Table(
@@ -83,7 +82,7 @@ class CacheResetDBListener:
     def before_commit(cls, session):
         session._should_invalidate_cache = False
         for obj in session.deleted:
-            if isinstance(obj, Permission) or isinstance(obj, Role):
+            if isinstance(obj, (Permission, Role)):
                 session._should_invalidate_cache = True
                 return
 

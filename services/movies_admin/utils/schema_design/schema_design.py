@@ -12,7 +12,7 @@ if __name__ == "__main__":
         'password': os.environ.get('POSTGRES_PASSWORD', 'postgres'),
     }
 
-    SQL = f"""
+    SQL = """
     CREATE SCHEMA IF NOT EXISTS content;
     CREATE TABLE IF NOT EXISTS content.genre (
         id UUID PRIMARY KEY,
@@ -78,10 +78,11 @@ if __name__ == "__main__":
     CREATE UNIQUE INDEX film_work_file ON content.file_film_work (film_work_id, file_id);
     """
 
+
     with psycopg2.connect(**dsl) as conn, conn.cursor() as cursor:
         try:
             cursor.execute(SQL)
-            print(f'Schema content is created.')
+            print('Schema content is created.')
         except psycopg2.errors.DuplicateTable:
-            print(f'Schema content already exists.')
+            print('Schema content already exists.')
     conn.close()

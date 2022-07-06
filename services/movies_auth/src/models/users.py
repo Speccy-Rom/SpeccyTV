@@ -80,8 +80,10 @@ class User(db.Model):
 
     @property
     def combined_permissions(self):
-        ordered_permissions = sorted(self._get_combined_permissions_set(), key=lambda permission: permission.name)
-        return ordered_permissions
+        return sorted(
+            self._get_combined_permissions_set(),
+            key=lambda permission: permission.name,
+        )
 
     # query example: {'any': ['packs_ext', {'all': ['cloud_people', 'electric_edwards']}]}
     @classmethod

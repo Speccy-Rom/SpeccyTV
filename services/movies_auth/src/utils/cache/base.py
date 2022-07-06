@@ -60,7 +60,7 @@ def cache_invalidate(key_suffix: str):
 
 
 def _get_key(user_id, key_suffix):
-    return '{}_{}'.format(user_id, key_suffix)
+    return f'{user_id}_{key_suffix}'
 
 
 def get_item(user_id, key_suffix):

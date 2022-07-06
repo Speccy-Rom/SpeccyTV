@@ -22,18 +22,23 @@ class PostgresSaver():
     def append_film_work(self, row: Dict[str, Any]) -> str:
         """Adds a row to the local film_work table."""
         film_id = str(uuid4())
-        self.film_work.append({
-            'id': str(film_id),
-            'title': row['title'],
-            'description': '' if row['description'] is None else row['description'],
-            'creation_date': None,
-            'certificate': '',
-            'file_path': None,
-            'rating': row['imdb_rating'],
-            'type': 'movie',
-            'created': datetime.now().astimezone(),
-            'modified': datetime.now().astimezone()
-        })
+        self.film_work.append(
+            {
+                'id': film_id,
+                'title': row['title'],
+                'description': ''
+                if row['description'] is None
+                else row['description'],
+                'creation_date': None,
+                'certificate': '',
+                'file_path': None,
+                'rating': row['imdb_rating'],
+                'type': 'movie',
+                'created': datetime.now().astimezone(),
+                'modified': datetime.now().astimezone(),
+            }
+        )
+
         return film_id
 
     def _add_person(self, id: str, name: str):
@@ -132,35 +137,35 @@ class PostgresSaver():
     def insert_film_work(self):
         """Inserts data from the local film_work table into PostgreSQL."""
         with self.conn.cursor() as cursor:
-            args = [tuple(val for val in row.values()) for row in self.film_work]
+            args = [tuple(row.values()) for row in self.film_work]
             args_bytes = b','.join(cursor.mogrify('(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', x) for x in args)
             cursor.execute(b'INSERT INTO content.film_work VALUES ' + args_bytes)
 
     def insert_genre(self):
         """Inserts data from the local film_work table into PostgreSQL."""
         with self.conn.cursor() as cursor:
-            args = [tuple(val for val in row.values()) for row in self.genre]
+            args = [tuple(row.values()) for row in self.genre]
             args_bytes = b','.join(cursor.mogrify('(%s, %s, %s, %s, %s)', x) for x in args)
             cursor.execute(b'INSERT INTO content.genre VALUES ' + args_bytes)
 
     def insert_person(self):
         """Inserts data from the local person table into PostgreSQL."""
         with self.conn.cursor() as cursor:
-            args = [tuple(val for val in row.values()) for row in self.person]
+            args = [tuple(row.values()) for row in self.person]
             args_bytes = b','.join(cursor.mogrify('(%s, %s, %s, %s, %s)', x) for x in args)
             cursor.execute(b'INSERT INTO content.person VALUES ' + args_bytes)
 
     def insert_genre_film_work(self):
         """Inserts data from the local genre_film_work table into PostgreSQL."""
         with self.conn.cursor() as cursor:
-            args = [tuple(val for val in row.values()) for row in self.genre_film_work]
+            args = [tuple(row.values()) for row in self.genre_film_work]
             args_bytes = b','.join(cursor.mogrify('(%s, %s, %s, %s)', x) for x in args)
             cursor.execute(b'INSERT INTO content.genre_film_work VALUES ' + args_bytes)
 
     def insert_person_film_work(self):
         """Inserts data from local table person_film_work into PostgreSQL."""
         with self.conn.cursor() as cursor:
-            args = [tuple(val for val in row.values()) for row in self.person_film_work]
+            args = [tuple(row.values()) for row in self.person_film_work]
             args_bytes = b','.join(cursor.mogrify('(%s, %s, %s, %s, %s)', x) for x in args)
             cursor.execute(b'INSERT INTO content.person_film_work VALUES '
                            + args_bytes

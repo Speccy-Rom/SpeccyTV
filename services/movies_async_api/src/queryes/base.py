@@ -41,8 +41,7 @@ class ServiceQueryInfo(BaseModel):
                                            desc=int(self.sort.desc)) if self.sort else None
         query_key = self.query
 
-        key = f'{page_key}:{filter_key}:{sort_key}:{query_key}'
-        return key
+        return f'{page_key}:{filter_key}:{sort_key}:{query_key}'
 
 
 class QueryParamsBase:

@@ -230,10 +230,7 @@ class RoleResource(BaseResource):
     @jwt_required()
     @permissions_required(PermissionNames.PERMISSIONS_ADMIN)
     def get(self, role_name=None):
-        if not role_name:
-            data = Role.query.all()
-        else:
-            data = self.get_object(Role, name=role_name)
+        data = self.get_object(Role, name=role_name) if role_name else Role.query.all()
         return marshal(data, self.resource_fields), HTTPStatus.OK
 
     @jwt_required()
