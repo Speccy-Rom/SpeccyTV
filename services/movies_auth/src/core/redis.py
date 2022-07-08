@@ -26,8 +26,7 @@ def save_tokens(user_id: str, access_jti: str, refresh_jti: str, user_agent: str
     user_tokens = json.loads(redis_db.get(user_id) or '{}')
 
     pipeline = redis_db.pipeline()
-    old_refresh = user_tokens.get(user_agent)
-    if old_refresh:
+    if old_refresh := user_tokens.get(user_agent):
         revoke_token(old_refresh, refresh=True)
 
     user_tokens[user_agent] = refresh_jti
