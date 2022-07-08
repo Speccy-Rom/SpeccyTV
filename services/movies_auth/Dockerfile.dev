@@ -1,0 +1,25 @@
+FROM python:3.9.6-alpine
+
+ENV APP_HOME=/usr/src/app
+WORKDIR $APP_HOME
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+RUN apk update \
+    && apk add postgresql-dev gcc libc-dev g++ make python3-dev musl-dev libffi-dev
+
+RUN pip install --upgrade pip
+COPY ./requirements/*.txt .
+RUN pip install -r dev.txt
+
+COPY ./entrypoint.sh .
+RUN sed -i 's/\r$//g' $APP_HOME/entrypoint.sh
+RUN chmod +x $APP_HOME/entrypoint.sh
+
+COPY ./src .
+
+EXPOSE 5000
+
+ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+CMD ["python", "app.py"]
