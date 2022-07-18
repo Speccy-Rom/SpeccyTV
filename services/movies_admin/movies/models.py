@@ -104,9 +104,11 @@ class PersonFilmWork(models.Model):
     class Meta:
         verbose_name = _('Person')
         verbose_name_plural = _('Persons')
-        db_table = f'"content"."person_film_work"'
+        db_table = '"content"."person_film_work"'
         managed = False
         unique_together = ('film_work', 'person', 'role')
+
+
 
 
 class GenreFilmWork(models.Model):
@@ -115,9 +117,11 @@ class GenreFilmWork(models.Model):
     genre = models.ForeignKey('movies.Genre', on_delete=models.CASCADE)
     created = models.DateTimeField(_('Created'), auto_created=True, auto_now_add=True)
 
+
+
     class Meta:
         verbose_name = _('Genre')
         verbose_name_plural = _('Genres')
-        db_table = f'"content"."genre_film_work"'
+        db_table = '"content"."genre_film_work"'
         managed = False
         unique_together = ('film_work', 'genre')
