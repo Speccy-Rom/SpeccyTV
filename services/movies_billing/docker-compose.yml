@@ -1,0 +1,21 @@
+version: "3.5"
+services:
+  postgres:
+    image: postgres:13-alpine
+    env_file:
+      - .env
+    volumes:
+      - ./dockerfiles/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_notification_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  rabbit:
+    image: rabbitmq:latest
+    logging:
+      driver: none
+    ports:
+      - "5672:5672"
+
+volumes:
+  postgres_notification_data:
