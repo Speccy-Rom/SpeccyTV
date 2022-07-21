@@ -1,0 +1,7 @@
+celery
+flower
+pydantic
+sqlalchemy
+psycopg2
+python-dateutil
+stripe
