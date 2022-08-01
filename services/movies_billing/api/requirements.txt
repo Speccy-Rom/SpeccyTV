@@ -1,0 +1,12 @@
+stripe
+fastapi
+pyjwt
+sqlalchemy
+asyncpg
+uvicorn
+pytest
+aiohttp
+alembic
+orjson
+async-stripe
+pydantic
