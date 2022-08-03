@@ -1,3 +1,4 @@
+from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session, sessionmaker
@@ -14,7 +15,7 @@ async_session = sessionmaker(
 Base = declarative_base()
 
 
-async def get_db() -> Session:
+async def get_db() -> AsyncGenerator:
     async with async_session() as session:
         async with session.begin():
             try:
