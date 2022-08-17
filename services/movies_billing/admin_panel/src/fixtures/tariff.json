@@ -1,0 +1,35 @@
+[
+  {
+    "model": "tariff.tariff",
+    "pk": 1,
+    "fields": {
+      "name": "Простой месяц",
+      "description": "Самый обычный тариф с оплатой каждый месяц",
+      "price": 20000,
+      "duration": 1,
+      "active": true
+    }
+  },
+  {
+    "model": "tariff.tariff",
+    "pk": 2,
+    "fields": {
+      "name": "Простой год",
+      "description": "Обычный годовой тариф на 12 месяцев",
+      "price": 200000,
+      "duration": 12,
+      "active": true
+    }
+  },
+  {
+    "model": "tariff.tariff",
+    "pk": 3,
+    "fields": {
+      "name": "Бесконечность",
+      "description": "Пожизненный тариф",
+      "price": 1000000,
+      "duration": 1200,
+      "active": true
+    }
+  }
+]
