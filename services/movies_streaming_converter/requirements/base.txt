@@ -1,0 +1,13 @@
+asyncpg==0.25.0
+atlastk==0.13
+backoff==1.11.1
+click==8.0.4
+fastapi==0.75.2
+ffmpeg-python==0.2.0
+loguru==0.6.0
+orjson==3.6.7
+pydantic==1.9.0
+pytz==2021.3
+starlette==0.17.1
+tortoise-orm==0.18.1
+uvicorn==0.17.5
