@@ -1,0 +1,28 @@
+FROM python:3.9.9-slim-buster
+
+WORKDIR /usr/src/app
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+RUN apt-get -y update && apt-get install -y ffmpeg
+RUN apt install -y netcat
+
+RUN pip install --upgrade pip
+COPY ./requirements/*.txt ./
+RUN pip install -r prod.txt
+
+COPY ./entrypoint.prod.sh .
+RUN sed -i 's/\r$//g' /usr/src/app/entrypoint.prod.sh
+RUN chmod +x /usr/src/app/entrypoint.prod.sh
+
+COPY ./src .
+
+ENTRYPOINT ["/usr/src/app/entrypoint.prod.sh"]
+
+CMD gunicorn \
+    -k uvicorn.workers.UvicornWorker \
+    -b 0.0.0.0:8000 \
+    --log-level debug \
+    --workers 1 \
+    main:app
