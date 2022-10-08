@@ -1,0 +1,4 @@
+pydantic==1.9.0
+pyfakefs==4.5.5
+psycopg2-binary==2.9.3
+requests==2.27.1
