@@ -1,0 +1,14 @@
+{
+  "create": {
+    "database": "CREATE DATABASE IF NOT EXISTS {db_name} ON CLUSTER {cluster_name}",
+    "table": "CREATE TABLE {db_name}.{table_name} ON CLUSTER {cluster_name} {fields_conf} Engine=MergeTree()",
+    "data": "INSERT INTO {db_name}.{table_name} ({fields}) VALUES"
+  },
+  "read":  {
+    "databases": "SHOW DATABASES",
+    "tables": "SHOW TABLES FROM {db_name}",
+    "data": "SELECT {fields} FROM {db_name}.{table_name}"
+  },
+  "update": {},
+  "delete": {}
+}
