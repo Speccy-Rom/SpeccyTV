@@ -1,0 +1,134 @@
+version: '3'
+
+services:
+  mongors1n1:
+    container_name: mongors1n1
+    image: mongo
+    command: mongod --shardsvr --replSet mongors1 --dbpath /data/db --port 27017
+    expose:
+      - "27017"
+    volumes:
+      - ./scripts:/scripts
+      - /etc/localtime:/etc/localtime:ro
+      - ugc_mongo_cluster_data1:/data/db
+
+  mongors1n2:
+    container_name: mongors1n2
+    image: mongo
+    command: mongod --shardsvr --replSet mongors1 --dbpath /data/db --port 27017
+    expose:
+      - "27017"
+    volumes:
+      - ./scripts:/scripts
+      - /etc/localtime:/etc/localtime:ro
+      - ugc_mongo_cluster_data2:/data/db
+
+  mongors1n3:
+    container_name: mongors1n3
+    image: mongo
+    command: mongod --shardsvr --replSet mongors1 --dbpath /data/db --port 27017
+    expose:
+      - "27017"
+    volumes:
+      - ./scripts:/scripts
+      - /etc/localtime:/etc/localtime:ro
+      - ugc_mongo_cluster_data3:/data/db
+
+  mongors2n1:
+    container_name: mongors2n1
+    image: mongo
+    command: mongod --shardsvr --replSet mongors2 --dbpath /data/db --port 27017
+    expose:
+      - "27017"
+    volumes:
+      - ./scripts:/scripts
+      - /etc/localtime:/etc/localtime:ro
+      - ugc_mongo_cluster_data4:/data/db
+
+  mongors2n2:
+    container_name: mongors2n2
+    image: mongo
+    command: mongod --shardsvr --replSet mongors2 --dbpath /data/db --port 27017
+    expose:
+      - "27017"
+    volumes:
+      - ./scripts:/scripts
+      - /etc/localtime:/etc/localtime:ro
+      - ugc_mongo_cluster_data5:/data/db
+
+  mongors2n3:
+    container_name: mongors2n3
+    image: mongo
+    command: mongod --shardsvr --replSet mongors2 --dbpath /data/db --port 27017
+    expose:
+      - "27017"
+    volumes:
+      - ./scripts:/scripts
+      - /etc/localtime:/etc/localtime:ro
+      - ugc_mongo_cluster_data6:/data/db
+
+  mongocfg1:
+    container_name: mongocfg1
+    image: mongo
+    command: mongod --configsvr --replSet mongors1conf --dbpath /data/db --port 27017
+    expose:
+      - "27017"
+    volumes:
+      - ./scripts:/scripts
+      - /etc/localtime:/etc/localtime:ro
+      - ugc_mongo_cluster_config1:/data/db
+
+  mongocfg2:
+    container_name: mongocfg2
+    image: mongo
+    command: mongod --configsvr --replSet mongors1conf --dbpath /data/db --port 27017
+    expose:
+      - "27017"
+    volumes:
+      - ./scripts:/scripts
+      - /etc/localtime:/etc/localtime:ro
+      - ugc_mongo_cluster_config2:/data/db
+
+  mongocfg3:
+    container_name: mongocfg3
+    image: mongo
+    command: mongod --configsvr --replSet mongors1conf --dbpath /data/db --port 27017
+    expose:
+      - "27017"
+    volumes:
+      - ./scripts:/scripts
+      - /etc/localtime:/etc/localtime:ro
+      - ugc_mongo_cluster_config3:/data/db
+
+  mongos1:
+    container_name: mongos1
+    image: mongo
+    depends_on:
+      - mongocfg1
+      - mongocfg2
+      - mongocfg3
+      - mongors1n1
+      - mongors1n2
+      - mongors1n3
+      - mongors2n1
+      - mongors2n2
+      - mongors2n3
+    command: mongos --configdb mongors1conf/mongocfg1:27017,mongocfg2:27017,mongocfg3:27017 --port 27017 --bind_ip_all
+    ports:
+      - 27017:27017
+    expose:
+      - "27017"
+    volumes:
+      - ./scripts:/scripts
+      - /etc/localtime:/etc/localtime:ro
+
+volumes:
+  ugc_mongo_cluster_data1:
+  ugc_mongo_cluster_data2:
+  ugc_mongo_cluster_data3:
+  ugc_mongo_cluster_data4:
+  ugc_mongo_cluster_data5:
+  ugc_mongo_cluster_data6:
+  ugc_mongo_cluster_config1:
+  ugc_mongo_cluster_config2:
+  ugc_mongo_cluster_config3:
