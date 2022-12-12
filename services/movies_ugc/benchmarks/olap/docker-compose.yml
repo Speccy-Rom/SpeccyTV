@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  clickhouse:
+    image: yandex/clickhouse-server
+    hostname: test_clickhouse
+    volumes:
+      - ./utils/clickhouse_init.sql:/docker-entrypoint-initdb.d/clickhouse_init.sql
+      - ugc_bench_clickhouse_data:/var/lib/clickhouse
+    ports:
+      - 9000:9000
+      - 8123:8123
+
+
+  vertica:
+    image: jbfavre/vertica
+    hostname: test_vertica
+    volumes:
+      - ./utils/vertica_init.sql:/docker-entrypoint-initdb.d/vertica_init.sql
+      - ugc_bench_vertica_data:/home/dbadmin/docker
+    ports:
+      - 5433:5433
+
+volumes:
+  ugc_bench_clickhouse_data:
+  ugc_bench_vertica_data:
