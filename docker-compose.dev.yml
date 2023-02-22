@@ -1,6 +1,7 @@
 volumes:
   minio_data:
 
+
 services:
   movies_admin:
     build:
