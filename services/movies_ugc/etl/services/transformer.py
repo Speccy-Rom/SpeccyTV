@@ -13,8 +13,7 @@ class Transformer:
     def validation(data):
         for model in KAFKA_TOPIC_MODELS:
             try:
-                validated_data = model.parse_obj(data)
-                return validated_data
+                return model.parse_obj(data)
             except ValidationError:
                 continue
 

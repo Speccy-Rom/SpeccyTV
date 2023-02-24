@@ -35,7 +35,7 @@ class Worker:
                 )
                 added_topics.append(new_topic)
 
-        if len(added_topics) != 0:
+        if added_topics:
             try:
                 self.kafka_admin.create_topics(new_topics=added_topics)
             except TopicAlreadyExistsError as e:

@@ -17,7 +17,7 @@ class UserEvent(BaseModel):
             (table_name) и столбцов (fields)
         """
         table_name = "user_events"
-        fields = f"{', '.join(field for field in self.__fields__.keys())}"
+        fields = f"{', '.join(self.__fields__.keys())}"
         return table_name, fields
 
     @validator('event_time', pre=True, always=True)
@@ -38,7 +38,7 @@ class UserLoginHistory(BaseModel):
             (table_name) и столбцов (fields)
         """
         table_name = "users_login"
-        fields = f"{', '.join(field for field in self.__fields__.keys())}"
+        fields = f"{', '.join(self.__fields__.keys())}"
         return table_name, fields
 
     @validator('login_time', pre=True, always=True)

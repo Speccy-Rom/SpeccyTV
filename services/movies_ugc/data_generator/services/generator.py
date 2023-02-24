@@ -31,29 +31,22 @@ class Generator:
         return event, frame
 
     def generate_login_history(self) -> dict:
-        data = {
+        return {
             "user_id": self.current_user_uuid,
             "user_ip": self.get_ip(),
             "user_agent": generate_user_agent(),
-            "login_time": datetime.datetime.now().strftime(
-                "%d-%m-%Y %H:%M:%S"
-            )
+            "login_time": datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
         }
-
-        return data
 
     def generate_user_event(self) -> dict:
         event, frame = self.get_event()
-        data = {
+        return {
             "movie_id": self.current_movie_uuid,
             "user_id": self.current_user_uuid,
             "event": event,
             "frame": frame,
-            "event_time": datetime.datetime.now().strftime(
-                "%d-%m-%Y %H:%M:%S"
-            )
+            "event_time": datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"),
         }
-        return data
 
     def get_data(self):
         self.current_user_uuid = self.get_uuid()

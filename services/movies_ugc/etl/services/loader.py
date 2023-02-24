@@ -42,15 +42,13 @@ class Loader:
             self.logger.info(
                 f"Загрузка Данных в ClickHouse. Таблица: {table_name}"
             )
-            status = self.click_manager.create(
+            if status := self.click_manager.create(
                 item='data',
                 data=batch,
                 db_name=self.configs.database,
                 table_name=table_name,
-                fields=fields
-            )
-
-            if status:
+                fields=fields,
+            ):
                 for consumer in self.consumers:
                     if table_name in consumer.subscription():
                         consumer.commit()
