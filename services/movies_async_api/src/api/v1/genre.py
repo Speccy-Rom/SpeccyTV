@@ -31,8 +31,7 @@ async def get_genres(params: QueryParamsBase, genre_service: GenreService) -> Li
             response_description='Genres list with base info')
 async def genres_info(params: GenreQueryParamsInfo = Depends(),
                       genre_service: GenreService = Depends(get_genre_service)) -> List[BaseGenre]:
-    genres = await get_genres(params, genre_service)
-    return genres
+    return await get_genres(params, genre_service)
 
 
 @router.get('/search',
@@ -41,8 +40,7 @@ async def genres_info(params: GenreQueryParamsInfo = Depends(),
             response_description='Genres list with base info')
 async def genres_search(params: GenreQueryParamsSearch = Depends(),
                         genre_service: GenreService = Depends(get_genre_service)) -> List[BaseGenre]:
-    genres = await get_genres(params, genre_service)
-    return genres
+    return await get_genres(params, genre_service)
 
 
 @router.get('/{genre_id}',

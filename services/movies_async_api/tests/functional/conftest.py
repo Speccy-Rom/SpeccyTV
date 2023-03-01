@@ -3,6 +3,7 @@ import asyncio
 import aiohttp
 import aioredis
 import aiofiles
+import pathlib
 import pytest
 from elasticsearch import AsyncElasticsearch
 
@@ -51,9 +52,7 @@ def cleaner(es_client):
 
 @pytest.fixture(scope='module')
 def tst_data(tst_data_path):
-    with open(tst_data_path) as f:
-        data = f.read()
-    yield data
+    yield pathlib.Path(tst_data_path).read_text()
 
 
 @pytest.fixture(scope='session')

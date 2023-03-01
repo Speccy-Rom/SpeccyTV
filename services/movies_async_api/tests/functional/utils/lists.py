@@ -1,10 +1,10 @@
+import itertools
 from typing import Any
 
 
 def drop_details(items: list[dict], detail_keys: list):
-    for item in items:
-        for key in detail_keys:
-            del item[key]
+    for item, key in itertools.product(items, detail_keys):
+        del item[key]
 
 
 def get_uuids(items: list[dict]) -> list[str]:

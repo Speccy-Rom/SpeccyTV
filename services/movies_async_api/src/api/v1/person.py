@@ -31,8 +31,7 @@ async def get_persons(params: QueryParamsBase, person_service: PersonService) ->
             response_description='Persons list with base info')
 async def persons_info(params: PersonQueryParamsInfo = Depends(),
                        person_service: PersonService = Depends(get_person_service)) -> List[BasePerson]:
-    persons = await get_persons(params, person_service)
-    return persons
+    return await get_persons(params, person_service)
 
 
 @router.get('/search',
@@ -43,8 +42,7 @@ async def persons_info(params: PersonQueryParamsInfo = Depends(),
             )
 async def persons_search(params: PersonQueryParamsSearch = Depends(),
                          person_service: PersonService = Depends(get_person_service)) -> List[BasePerson]:
-    persons = await get_persons(params, person_service)
-    return persons
+    return await get_persons(params, person_service)
 
 
 @router.get('/{person_id}',
