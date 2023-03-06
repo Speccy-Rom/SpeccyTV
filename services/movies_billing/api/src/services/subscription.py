@@ -32,9 +32,7 @@ class SubscriptionService(object):
             ),
         )
         user = user.first()
-        if not user:
-            return None
-        return user.stripe_customer_id
+        return user.stripe_customer_id if user else None
 
     async def _create_customer(self, user_id: str):
         customer_id = await self.payment_processor.create_customer()
@@ -77,12 +75,9 @@ class SubscriptionService(object):
 
         logging.info(f'create session for user {stripe_customer_id}')
 
-        url = await self.payment_processor.create_setup_session(
-            stripe_customer_id,
-            settings.success_callback,
-            settings.cancel_callback
+        return await self.payment_processor.create_setup_session(
+            stripe_customer_id, settings.success_callback, settings.cancel_callback
         )
-        return url
 
     async def create_subscription(self, session_id: str, tariff_id: int):
         stripe_customer_id = await self.payment_processor.get_sustomer_id_from_session(session_id)

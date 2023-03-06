@@ -17,10 +17,12 @@ async def auth(authorization: HTTPAuthorizationCredentials = Depends(oauth_schem
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                                 detail="User id not found")
         return user_id
-    except jwt.exceptions.DecodeError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail="Could not validate credentials",
-                            headers={"WWW-Authenticate": "Bearer"})
+    except jwt.exceptions.DecodeError as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        ) from e
 
 
 def get_auth():
