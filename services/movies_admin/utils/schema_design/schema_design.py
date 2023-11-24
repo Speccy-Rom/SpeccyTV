@@ -3,7 +3,6 @@ import os
 import psycopg2
 
 if __name__ == "__main__":
-
     dsl = {
         'dbname': os.environ.get('POSTGRES_NAME', 'movies'),
         'user': os.environ.get('POSTGRES_USER', 'postgres'),

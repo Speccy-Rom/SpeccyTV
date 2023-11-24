@@ -22,7 +22,15 @@ class FileInLineAdmin(admin.TabularInline):
 class FilmWorkAdmin(admin.ModelAdmin):
     list_display = ('title', 'type', 'creation_date', 'rating')
     list_filter = ('type',)
-    fields = ('title', 'type', 'description', 'creation_date', 'rating', 'certificate', 'file_path')
+    fields = (
+        'title',
+        'type',
+        'description',
+        'creation_date',
+        'rating',
+        'certificate',
+        'file_path',
+    )
     inlines = (PersonInLineAdmin, GenreInLineAdmin, FileInLineAdmin)
     search_fields = ('title', 'description', 'type', 'genres', 'files')
 
