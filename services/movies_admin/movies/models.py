@@ -17,7 +17,7 @@ class Person(TimeStampedModel):
         verbose_name = _('Person')
         verbose_name_plural = _('Persons')
         managed = False
-        db_table = f'"content"."person"'
+        db_table = '"content"."person"'
 
     def __str__(self):
         return self.full_name
@@ -32,7 +32,7 @@ class Genre(TimeStampedModel):
         verbose_name = _('Genre')
         verbose_name_plural = _('Genres')
         managed = False
-        db_table = f'"content"."genre"'
+        db_table = '"content"."genre"'
 
     def __str__(self):
         return self.name
@@ -54,7 +54,7 @@ class File(TimeStampedModel):
         verbose_name = _('File')
         verbose_name_plural = _('Files')
         managed = False
-        db_table = f'"content"."file"'
+        db_table = '"content"."file"'
 
     def __str__(self):
         return f'{self.file_path}'
@@ -72,7 +72,9 @@ class FilmWork(TimeStampedModel):
     creation_date = models.DateField(_('Creation date'), null=True, blank=True)
     certificate = models.TextField(_('Certificate'), blank=True)
     file_path = models.FileField(_('Original file'), upload_to='film_works/')
-    rating = models.FloatField(_('Rating'), validators=[Min(0), Max(10)], null=True, blank=True)
+    rating = models.FloatField(
+        _('Rating'), validators=[Min(0), Max(10)], null=True, blank=True
+    )
     type = models.TextField(_('Type'), choices=FilmWorkType.choices, blank=True)
     genres = models.ManyToManyField('movies.Genre', through='movies.GenreFilmWork')
     persons = models.ManyToManyField('movies.Person', through='movies.PersonFilmWork')
@@ -82,7 +84,7 @@ class FilmWork(TimeStampedModel):
         verbose_name = _('Film')
         verbose_name_plural = _('Films')
         managed = False
-        db_table = f'"content"."film_work"'
+        db_table = '"content"."film_work"'
 
     def __str__(self):
         return self.title
@@ -109,15 +111,11 @@ class PersonFilmWork(models.Model):
         unique_together = ('film_work', 'person', 'role')
 
 
-
-
 class GenreFilmWork(models.Model):
     id = models.UUIDField(_('id'), primary_key=True, default=uuid.uuid4, editable=False)
     film_work = models.ForeignKey('movies.FilmWork', on_delete=models.CASCADE)
     genre = models.ForeignKey('movies.Genre', on_delete=models.CASCADE)
     created = models.DateTimeField(_('Created'), auto_created=True, auto_now_add=True)
-
-
 
     class Meta:
         verbose_name = _('Genre')

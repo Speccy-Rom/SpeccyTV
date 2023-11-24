@@ -3,7 +3,7 @@ import sqlite3
 from typing import List
 
 
-class SQLiteLoader():
+class SQLiteLoader:
     """Loads data from SQLite.
     Loads data from SQLite, converts it and returns a list of dictionaries
     for The dictionary list can be processed by PostgresSaver.
@@ -65,12 +65,14 @@ class SQLiteLoader():
             'genre': row['genre'].replace(' ', '').split(','),
             'actors': actors_names,
             'writers': [x['name'] for x in movie_writers],
-            'imdb_rating': float(row['imdb_rating']) if row['imdb_rating'] != 'N/A' else None,
+            'imdb_rating': float(row['imdb_rating'])
+            if row['imdb_rating'] != 'N/A'
+            else None,
             'title': row['title'],
-            'director': [
-                x.strip() for x in row['director'].split(',')
-            ] if row['director'] != 'N/A' else None,
-            'description': row['plot'] if row['plot'] != 'N/A' else None
+            'director': [x.strip() for x in row['director'].split(',')]
+            if row['director'] != 'N/A'
+            else None,
+            'description': row['plot'] if row['plot'] != 'N/A' else None,
         }
 
     def load_movies(self) -> List[dict]:

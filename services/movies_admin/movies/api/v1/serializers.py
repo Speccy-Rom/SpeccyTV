@@ -5,14 +5,12 @@ from rest_framework.serializers import ModelSerializer
 
 
 class PersonSerializer(ModelSerializer):
-
     class Meta:
         model = Person
         exclude = ('created', 'modified')
 
 
 class GenreSerializer(ModelSerializer):
-
     class Meta:
         model = Genre
         exclude = ('created', 'modified')

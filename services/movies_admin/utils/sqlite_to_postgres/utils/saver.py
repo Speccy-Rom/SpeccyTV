@@ -6,7 +6,7 @@ from uuid import uuid4
 from psycopg2.extensions import connection as _connection
 
 
-class PostgresSaver():
+class PostgresSaver:
     """Processed data from SQLite."""
 
     def __init__(self, connection: _connection):
@@ -22,29 +22,33 @@ class PostgresSaver():
     def append_film_work(self, row: Dict[str, Any]) -> str:
         """Adds a row to the local film_work table."""
         film_id = str(uuid4())
-        self.film_work.append({
-            'id': str(film_id),
-            'title': row['title'],
-            'description': '' if row['description'] is None else row['description'],
-            'creation_date': None,
-            'certificate': '',
-            'file_path': None,
-            'rating': row['imdb_rating'],
-            'type': 'movie',
-            'created': datetime.now().astimezone(),
-            'modified': datetime.now().astimezone()
-        })
+        self.film_work.append(
+            {
+                'id': str(film_id),
+                'title': row['title'],
+                'description': '' if row['description'] is None else row['description'],
+                'creation_date': None,
+                'certificate': '',
+                'file_path': None,
+                'rating': row['imdb_rating'],
+                'type': 'movie',
+                'created': datetime.now().astimezone(),
+                'modified': datetime.now().astimezone(),
+            }
+        )
         return film_id
 
     def _add_person(self, id: str, name: str):
         """Adds a row to the local person table."""
-        self.person.append({
-            'id': id,
-            'full_name': name,
-            'birth_date': None,
-            'created': datetime.now().astimezone(),
-            'modified': datetime.now().astimezone()
-        })
+        self.person.append(
+            {
+                'id': id,
+                'full_name': name,
+                'birth_date': None,
+                'created': datetime.now().astimezone(),
+                'modified': datetime.now().astimezone(),
+            }
+        )
 
     def append_person(self, person_list: List[str]) -> List[str]:
         """Adds several rows to the local person table.
@@ -77,7 +81,7 @@ class PostgresSaver():
             "name": name,
             "description": "",
             "created": datetime.now().astimezone(),
-            "modified": datetime.now().astimezone()
+            "modified": datetime.now().astimezone(),
         }
         self.genre.append(row)
 
@@ -105,7 +109,9 @@ class PostgresSaver():
 
         return id_list
 
-    def append_person_film_work(self, film_id: str, person_id_list: List[str], role: str):
+    def append_person_film_work(
+        self, film_id: str, person_id_list: List[str], role: str
+    ):
         """Adds a rows to the local person_film_work table."""
         for person_id in person_id_list:
             id_ = str(uuid4())
@@ -114,7 +120,7 @@ class PostgresSaver():
                 "film_work_id": film_id,
                 "person_id": person_id,
                 "role": role,
-                "created": datetime.now().astimezone()
+                "created": datetime.now().astimezone(),
             }
             self.person_film_work.append(row)
 
@@ -125,7 +131,7 @@ class PostgresSaver():
                 'id': str(uuid4()),
                 'film_work_id': film_id,
                 'genre_id': genre_id,
-                'created': datetime.now().astimezone()
+                'created': datetime.now().astimezone(),
             }
             self.genre_film_work.append(row)
 
@@ -133,21 +139,28 @@ class PostgresSaver():
         """Inserts data from the local film_work table into PostgreSQL."""
         with self.conn.cursor() as cursor:
             args = [tuple(val for val in row.values()) for row in self.film_work]
-            args_bytes = b','.join(cursor.mogrify('(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', x) for x in args)
+            args_bytes = b','.join(
+                cursor.mogrify('(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)', x)
+                for x in args
+            )
             cursor.execute(b'INSERT INTO content.film_work VALUES ' + args_bytes)
 
     def insert_genre(self):
         """Inserts data from the local film_work table into PostgreSQL."""
         with self.conn.cursor() as cursor:
             args = [tuple(val for val in row.values()) for row in self.genre]
-            args_bytes = b','.join(cursor.mogrify('(%s, %s, %s, %s, %s)', x) for x in args)
+            args_bytes = b','.join(
+                cursor.mogrify('(%s, %s, %s, %s, %s)', x) for x in args
+            )
             cursor.execute(b'INSERT INTO content.genre VALUES ' + args_bytes)
 
     def insert_person(self):
         """Inserts data from the local person table into PostgreSQL."""
         with self.conn.cursor() as cursor:
             args = [tuple(val for val in row.values()) for row in self.person]
-            args_bytes = b','.join(cursor.mogrify('(%s, %s, %s, %s, %s)', x) for x in args)
+            args_bytes = b','.join(
+                cursor.mogrify('(%s, %s, %s, %s, %s)', x) for x in args
+            )
             cursor.execute(b'INSERT INTO content.person VALUES ' + args_bytes)
 
     def insert_genre_film_work(self):
@@ -161,10 +174,14 @@ class PostgresSaver():
         """Inserts data from local table person_film_work into PostgreSQL."""
         with self.conn.cursor() as cursor:
             args = [tuple(val for val in row.values()) for row in self.person_film_work]
-            args_bytes = b','.join(cursor.mogrify('(%s, %s, %s, %s, %s)', x) for x in args)
-            cursor.execute(b'INSERT INTO content.person_film_work VALUES '
-                           + args_bytes
-                           + b' ON CONFLICT (film_work_id, person_id, role) DO NOTHING')
+            args_bytes = b','.join(
+                cursor.mogrify('(%s, %s, %s, %s, %s)', x) for x in args
+            )
+            cursor.execute(
+                b'INSERT INTO content.person_film_work VALUES '
+                + args_bytes
+                + b' ON CONFLICT (film_work_id, person_id, role) DO NOTHING'
+            )
 
     def save_all_data(self, data: List[dict]):
         """Basic method that processes data from MySQL and loads it into PostgreSQL."""
