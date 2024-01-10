@@ -2,11 +2,8 @@ from django.contrib.postgres.aggregates import ArrayAgg
 from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
 from movies.api.v1.filters import FilmWorkFilter, GenreFilter, PersonFilter
-from movies.api.v1.serializers import (
-    FilmWorkSerializer,
-    GenreSerializer,
-    PersonSerializer,
-)
+from movies.api.v1.serializers import (FilmWorkSerializer, GenreSerializer,
+                                       PersonSerializer)
 from movies.models import FilmWork, Genre, Person, RoleType
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
