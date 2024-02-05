@@ -33,7 +33,9 @@ def permissions_required(*permissions: str, condition: Optional[dict] = None):
             if not user:
                 return abort(409)
 
-            permissions_query = _get_permissions_query(*permissions, condition=condition)
+            permissions_query = _get_permissions_query(
+                *permissions, condition=condition
+            )
             if not user.check_permissions(permissions_query):
                 return abort(403)
 
