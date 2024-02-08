@@ -6,12 +6,17 @@ from pydantic import BaseSettings
 
 from models import Queries
 
-# Инициализация пути к файлу с запросами
+# Initialize the path to the file containing queries
 queries_file_path = Path('configs/queries.json')
 
 
-# Настройка и инициализация логирования
 def set_logger() -> logging.Logger:
+    """
+    Set up and initialize logging.
+
+    Returns:
+        logging.Logger: Configured logger.
+    """
     logger = logging.getLogger(__name__)
     logger.setLevel('DEBUG')
     handler = logging.StreamHandler()
@@ -22,22 +27,35 @@ def set_logger() -> logging.Logger:
     return logger
 
 
-# Модели с базовыми настройками
 class KafkaConfigs(BaseSettings):
-    host = os.environ.get('KAFKA_HOST', 'localhost')
-    port = os.environ.get('KAFKA_PORT', 9092)
-    topics = os.environ.get('KAFKA_TOPICS')
+    """
+    Model for Kafka configuration settings.
+    """
+
+    host = os.environ.get('KAFKA_HOST', 'localhost')  # Kafka host
+    port = os.environ.get('KAFKA_PORT', 9092)  # Kafka port
+    topics = os.environ.get('KAFKA_TOPICS')  # Kafka topics
 
 
 class ClickHouseConfigs(BaseSettings):
-    host = os.environ.get('CLICKHOUSE_HOST', 'localhost')
-    database = os.environ.get('CLICKHOUSE_DB', 'default')
-    tables = os.environ.get('KAFKA_TOPICS')
-    max_batch_len = int(os.environ.get('CLICKHOUSE_MAX_BATCH_LEN', 10))
+    """
+    Model for ClickHouse configuration settings.
+    """
+
+    host = os.environ.get('CLICKHOUSE_HOST', 'localhost')  # ClickHouse host
+    database = os.environ.get('CLICKHOUSE_DB', 'default')  # ClickHouse database
+    tables = os.environ.get('KAFKA_TOPICS')  # ClickHouse tables
+    max_batch_len = int(
+        os.environ.get('CLICKHOUSE_MAX_BATCH_LEN', 10)
+    )  # Maximum batch length for ClickHouse
 
 
 class ETLConfigs(BaseSettings):
-    logger = set_logger()
-    kafka = KafkaConfigs()
-    queries = Queries.parse_file(queries_file_path)
-    click = ClickHouseConfigs()
+    """
+    Model for ETL configuration settings.
+    """
+
+    logger = set_logger()  # Logger
+    kafka = KafkaConfigs()  # Kafka configurations
+    queries = Queries.parse_file(queries_file_path)  # Queries
+    click = ClickHouseConfigs()  # ClickHouse configurations
