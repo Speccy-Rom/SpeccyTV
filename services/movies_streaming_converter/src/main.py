@@ -1,6 +1,5 @@
 import logging
 
-from api.v1 import convertation
 from core.config.api import get_config
 from db.connections import close_connections, init_connections
 from fastapi import FastAPI, Request

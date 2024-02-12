@@ -4,7 +4,7 @@ from tortoise.transactions import in_transaction
 
 async def create_convertation(convert_to_create: Convertation) -> Convertation:
     async with in_transaction() as tr:
-        res_ = await Convertation.create(
+        return await Convertation.create(
             source_path=convert_to_create.source_path,
             destination_path=convert_to_create.destination_path,
             resolution=convert_to_create.resolution,
@@ -15,4 +15,3 @@ async def create_convertation(convert_to_create: Convertation) -> Convertation:
             status=convert_to_create.status,
             using_db=tr,
         )
-        return res_
