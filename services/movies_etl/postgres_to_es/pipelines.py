@@ -16,7 +16,26 @@ module_logger = logging.getLogger('Pipeline')
 
 
 class BasePipeline(abc.ABC):
+    """
+    This is an abstract base class for creating data pipelines. It provides the basic structure and methods
+    that all data pipelines should have. It should be subclassed by specific pipeline implementations.
+
+    Attributes:
+        state (State): An instance of the State class that manages the state of the pipeline.
+        db_adapter (PostgresProducer): An instance of the PostgresProducer class that handles database operations.
+        es_loader (ElasticsearchLoader): An instance of the ElasticsearchLoader class that handles Elasticsearch operations.
+        state_key (str): A string that represents the key for the state of the pipeline.
+    """
+
     def __init__(self, state: State, db_adapter: PostgresProducer, es_loader: ElasticsearchLoader):
+        """
+        The constructor for the BasePipeline class.
+
+        Parameters:
+            state (State): An instance of the State class.
+            db_adapter (PostgresProducer): An instance of the PostgresProducer class.
+            es_loader (ElasticsearchLoader): An instance of the ElasticsearchLoader class.
+        """
         self.state = state
         self.db_adapter = db_adapter
         self.es_loader = es_loader
@@ -28,23 +47,39 @@ class BasePipeline(abc.ABC):
     @property
     @abc.abstractmethod
     def index(self) -> str:
+        """
+        Abstract method that should be implemented by subclasses to return the index name.
+        """
         pass
 
     @abc.abstractmethod
     def etl_process(self) -> None:
+        """
+        Abstract method that should be implemented by subclasses to define the ETL process.
+        """
         pass
 
     @abc.abstractmethod
     def transform(self, target: Generator) -> Generator:
+        """
+        Abstract method that should be implemented by subclasses to define the transformation process.
+        """
         pass
 
     @coroutine
     def enrich(self, query: str, target: Generator) -> Generator:
+        """
+        Coroutine that enriches the data by executing a query and sending the results to a target generator.
+
+        Parameters:
+            query (str): The SQL query to execute.
+            target (Generator): The target generator to send the results to.
+        """
         while True:
-            context = []
             ids = (yield)
             module_logger.info('Got %d ids', len(ids))
             if ids:
+                context = []
                 for chunck_rows in self.db_adapter.execute(query, list(ids)):
                     context.extend(chunck_rows)
 
@@ -52,6 +87,13 @@ class BasePipeline(abc.ABC):
 
     @coroutine
     def collect_updated_ids(self, query: str, target: Generator) -> Generator:
+        """
+        Coroutine that collects updated IDs by executing a query and sending the results to a target generator.
+
+        Parameters:
+            query (str): The SQL query to execute.
+            target (Generator): The target generator to send the results to.
+        """
         while True:
             result = []
             query_args = (yield)
@@ -63,10 +105,23 @@ class BasePipeline(abc.ABC):
 
     @coroutine
     def es_loader_coro(self, index_name: str) -> Generator:
+        """
+        Coroutine that loads data to Elasticsearch.
+
+        Parameters:
+            index_name (str): The name of the Elasticsearch index to load data to.
+        """
         while rows := (yield):
             self.es_loader.load_to_es(rows, index_name)
 
     def event_loop(self, generators: List[Generator]):
+        """
+        Method that runs the event loop for the pipeline. It gets the current state, sends it to all generators,
+        updates the state, and then sleeps for a specified delay.
+
+        Parameters:
+            generators (List[Generator]): A list of generators to send the state to.
+        """
         while True:
             state_value = self.state.get_state(self.state_key) or config.ETL_DEFAULT_DATE
             module_logger.info('Start ETL process for %s: %s', self.state_key, state_value)
@@ -78,14 +133,31 @@ class BasePipeline(abc.ABC):
 
 
 class FilmWorkPipeline(BasePipeline):
+    """
+    This class is a specific implementation of the BasePipeline for film works. It defines the ETL process for film works,
+    including the enrichment, transformation, and loading of film work data.
+
+    Attributes:
+        index (str): The name of the Elasticsearch index for film works.
+    """
+
     @property
     def index(self):
+        """
+        Returns the name of the Elasticsearch index for film works.
+        """
         return 'movies'
 
     @coroutine
     def enrich(self, query: str, target: Generator) -> Generator:
+        """
+        Coroutine that enriches the film work data by executing a query and sending the results to a target generator.
+
+        Parameters:
+            query (str): The SQL query to execute.
+            target (Generator): The target generator to send the results to.
+        """
         while True:
-            context = []
             ids = set()
             fw_ids_from_person = (yield)
             ids.update(fw_ids_from_person)
@@ -101,6 +173,7 @@ class FilmWorkPipeline(BasePipeline):
 
             module_logger.info('Total unique film_work ids to update: %d', len(ids))
             if ids:
+                context = []
                 for chunck_rows in self.db_adapter.execute(query, list(ids)):
                     context.extend(chunck_rows)
 
@@ -108,6 +181,12 @@ class FilmWorkPipeline(BasePipeline):
 
     @coroutine
     def transform(self, target: Generator) -> Generator:
+        """
+        Coroutine that transforms the enriched film work data into a format suitable for loading into Elasticsearch.
+
+        Parameters:
+            target (Generator): The target generator to send the transformed data to.
+        """
         while rows := (yield):
             movies = {}
             for row in rows:
@@ -140,6 +219,9 @@ class FilmWorkPipeline(BasePipeline):
             target.send([movie.as_dict for movie in movies.values()])
 
     def etl_process(self):
+        """
+        Defines the ETL process for film works. It sets up the necessary coroutines and runs the event loop.
+        """
         es_target = self.es_loader_coro(self.index)
         transform_target = self.transform(es_target)
         enrich_target = self.enrich(queries.FW_QUERY, transform_target)

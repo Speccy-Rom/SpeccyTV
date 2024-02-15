@@ -92,15 +92,14 @@ class Film(ShortFilm):
 
     def add_video(self, file: ShortFile, width: int):
         if width:
-            if 720 <= width:
+            if width >= 720:
                 if file not in self.high_quality_file:
                     self.high_quality_file.append(file)
             elif 480 <= width < 720:
                 if file not in self.middle_quality_file:
                     self.middle_quality_file.append(file)
-            elif width < 480:
-                if file not in self.low_quality_file:
-                    self.low_quality_file.append(file)
+            elif file not in self.low_quality_file:
+                self.low_quality_file.append(file)
 
     @property
     def as_dict(self):
