@@ -8,6 +8,22 @@ oauth_schema = HTTPBearer()
 
 
 async def auth(authorization: HTTPAuthorizationCredentials = Depends(oauth_schema)):
+    """
+    This asynchronous function is used to authenticate a user.
+
+    It decodes the JWT token provided in the authorization header and extracts the user ID from the payload.
+    If the user ID is not found in the payload, it raises an HTTP 404 error.
+    If the JWT token cannot be decoded, it raises an HTTP 401 error.
+
+    Parameters:
+    authorization (HTTPAuthorizationCredentials): The authorization credentials provided in the HTTP header.
+
+    Returns:
+    str: The user ID extracted from the JWT token payload.
+
+    Raises:
+    HTTPException: An exception of type HTTPException is raised in case of any error.
+    """
     try:
         payload = jwt.decode(authorization.credentials,
                              settings.jwt_secret_key,
@@ -26,4 +42,10 @@ async def auth(authorization: HTTPAuthorizationCredentials = Depends(oauth_schem
 
 
 def get_auth():
+    """
+    This function returns the auth function.
+
+    Returns:
+    function: The auth function.
+    """
     return auth
