@@ -16,7 +16,7 @@ async def connect_to_redis():
     redis_client = await aioredis.create_redis((REDIS_HOST, REDIS_PORT), db=REDIS_TEST_DB)
     ping = bytes()
 
-    while not ping == b'PONG':
+    while ping != b'PONG':
         await asyncio.sleep(1)
         ping = await redis_client.ping()
 
