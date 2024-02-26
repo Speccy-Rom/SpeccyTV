@@ -31,21 +31,21 @@ class CDNMovieFilesLoader(BaseMovieFilesLoader):
     def _build_query(self) -> str:
         query_values: List[str] = []
         for transform_result in self.transform_results.results:
-            for film_file in transform_result.film_files:
-                query_values.append(
-                    "(" + ",".join(
-                        (
-                            f"'{str(uuid4())}'",
-                            f"'{film_file.destination_path}/{film_file.file_name}_{str(film_file.resolution)}p.avi'",
-                            f"'{str(film_file.resolution)}p'",
-                            f"'{str(datetime.now(timezone.utc))}'",
-                            f"'{str(datetime.now(timezone.utc))}'",
-                        )
-                    ) + ")"
+            query_values.extend(
+                "("
+                + ",".join(
+                    (
+                        f"'{str(uuid4())}'",
+                        f"'{film_file.destination_path}/{film_file.file_name}_{str(film_file.resolution)}p.avi'",
+                        f"'{str(film_file.resolution)}p'",
+                        f"'{str(datetime.now(timezone.utc))}'",
+                        f"'{str(datetime.now(timezone.utc))}'",
+                    )
                 )
-        with open(self.query_path) as query_file:
-            query: str = query_file.read()
-
+                + ")"
+                for film_file in transform_result.film_files
+            )
+        query: str = Path(self.query_path).read_text()
         logger.info(query)
         return query.format(",".join(query_values))
 
