@@ -19,9 +19,22 @@ router = APIRouter()
     description='Оформить подписку',
 )
 async def create(
-        user_id: str = Depends(get_auth()),
-        payment_service: SubscriptionService = Depends(get_subscription_service)
+    user_id: str = Depends(get_auth()),
+    payment_service: SubscriptionService = Depends(get_subscription_service),
 ) -> RedirectResponse:
+    """
+    Create a new subscription for a user.
+
+    Args:
+        user_id (str): The ID of the user to create the subscription for.
+        payment_service (SubscriptionService): The service to use for payment processing.
+
+    Returns:
+        RedirectResponse: A response that redirects the user to the payment setup page.
+
+    Raises:
+        HTTPException: If the user already has a subscription.
+    """
     try:
         url = await payment_service.prepare_setup_payment(user_id)
     except AlreadyHasSubscriptions:
@@ -36,9 +49,22 @@ async def create(
     description='Отменить подписку',
 )
 async def cancel(
-        user_id: str = Depends(get_auth()),
-        payment_service: SubscriptionService = Depends(get_subscription_service)
+    user_id: str = Depends(get_auth()),
+    payment_service: SubscriptionService = Depends(get_subscription_service),
 ) -> PlainTextResponse:
+    """
+    Cancel a user's subscription.
+
+    Args:
+        user_id (str): The ID of the user to cancel the subscription for.
+        payment_service (SubscriptionService): The service to use for payment processing.
+
+    Returns:
+        PlainTextResponse: A response indicating the subscription was cancelled.
+
+    Raises:
+        HTTPException: If the user does not have an active subscription.
+    """
     try:
         await payment_service.cancel_subscription(user_id)
     except NoActiveSubscription:
@@ -54,9 +80,19 @@ async def cancel(
     description='Успех',
 )
 async def subscription_success(
-        session_id: str,
-        payment_service: SubscriptionService = Depends(get_subscription_service)
+    session_id: str,
+    payment_service: SubscriptionService = Depends(get_subscription_service),
 ) -> Response:
+    """
+    Handle successful subscription creation.
+
+    Args:
+        session_id (str): The ID of the payment session.
+        payment_service (SubscriptionService): The service to use for payment processing.
+
+    Returns:
+        PlainTextResponse: A response indicating the subscription was successfully created.
+    """
     # TODO tariff ID
     await payment_service.create_subscription(session_id, 1)
     return PlainTextResponse('Подписка успешно оформлена')
@@ -69,10 +105,23 @@ async def subscription_success(
     description='Успех',
 )
 async def subscription_cancel() -> PlainTextResponse:
+    """
+    Handle subscription cancellation failure.
+
+    Returns:
+        PlainTextResponse: A response indicating something went wrong with the cancellation.
+    """
     return PlainTextResponse('Something went wrong')
 
 
 class SubscriptionStatusScheme(BaseModel):
+    """
+    A Pydantic model for the status of a subscription.
+
+    Attributes:
+        status (bool): The status of the subscription.
+    """
+
     status: bool
 
 
@@ -83,9 +132,19 @@ class SubscriptionStatusScheme(BaseModel):
     description='Успех',
 )
 async def subscription_status(
-        user_id: str = Depends(get_auth()),
-        subscription_service: SubscriptionService = Depends(get_subscription_service),
+    user_id: str = Depends(get_auth()),
+    subscription_service: SubscriptionService = Depends(get_subscription_service),
 ) -> SubscriptionStatusScheme:
+    """
+    Get the status of a user's subscription.
+
+    Args:
+        user_id (str): The ID of the user to get the subscription status for.
+        subscription_service (SubscriptionService): The service to use for payment processing.
+
+    Returns:
+        SubscriptionStatusScheme: The status of the user's subscription.
+    """
     status = await subscription_service.get_subscription_status(user_id)
     return SubscriptionStatusScheme(status=status)
 
@@ -97,8 +156,18 @@ async def subscription_status(
     description='Запрос статуса подписки для пользователя',
 )
 async def subscription_status(
-        user_id: str,
-        subscription_service: SubscriptionService = Depends(get_subscription_service),
+    user_id: str,
+    subscription_service: SubscriptionService = Depends(get_subscription_service),
 ) -> SubscriptionStatusScheme:
+    """
+    Get the status of a specific user's subscription.
+
+    Args:
+        user_id (str): The ID of the user to get the subscription status for.
+        subscription_service (SubscriptionService): The service to use for payment processing.
+
+    Returns:
+        SubscriptionStatusScheme: The status of the user's subscription.
+    """
     status = await subscription_service.get_subscription_status(user_id)
     return SubscriptionStatusScheme(status=status)

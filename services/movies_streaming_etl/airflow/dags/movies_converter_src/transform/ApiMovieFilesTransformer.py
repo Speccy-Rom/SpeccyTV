@@ -1,12 +1,11 @@
 import logging
 from http import HTTPStatus
 from logging import Logger
-from random import choice
-from typing import List, Optional
+from typing import List
 
 from airflow.utils.log.logging_mixin import LoggingMixin
 from movies_converter_src.core.config.converter_api import ConverterAPIConfig, get_converter_API_config
-from movies_converter_src.models.film import Film, FilmFile, Films, TransformResult, TransformResults
+from movies_converter_src.models.film import Film, FilmFile, TransformResult, TransformResults
 from movies_converter_src.transform.BaseMovieFilesTransformer import BaseMovieFilesTransformer
 from requests import ConnectionError, ConnectTimeout, HTTPError, ReadTimeout, Timeout
 from requests import post as http_post

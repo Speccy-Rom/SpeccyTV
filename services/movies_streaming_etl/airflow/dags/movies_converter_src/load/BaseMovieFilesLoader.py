@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 
-from airflow.utils.log.logging_mixin import LoggingMixin
 from movies_converter_src.models.film import LoaderResults, TransformResults
 
 
