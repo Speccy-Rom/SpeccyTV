@@ -2,6 +2,7 @@ from functools import wraps
 
 import opentracing
 from jaeger_client import Config
+from flask import current_app as app
 
 from .config import JAEGER_HOST
 
@@ -28,7 +29,7 @@ def setup_jaeger():
 def trace(func):
     @wraps(func)
     def inner(*args, **kwargs):
-        from app import tracer
+        tracer = app.tracer
         parent_span = tracer.get_span()
         with opentracing.tracer.start_span(func.__name__, child_of=parent_span):
             return func(*args, **kwargs)
