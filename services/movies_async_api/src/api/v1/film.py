@@ -52,7 +52,8 @@ async def films_info(params: FilmQueryParamsInfo = Depends(),
     return await get_films(params, film_service)
 
 
-# API endpoint for full-text search of films with pagination, filtering by genre and sorting by rating, title, and relevance
+# API endpoint for full-text search of films with pagination, filtering by genre and sorting by rating, title,
+# and relevance
 @router.get('/search',
             response_model=List[BaseFilm],
             description='''Films full-text search with pagination, filtering by genre and sorting by rating, title,
