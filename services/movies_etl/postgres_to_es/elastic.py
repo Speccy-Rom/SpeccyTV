@@ -23,7 +23,12 @@ class ElasticsearchLoader:
         :param hosts: List of hosts where Elasticsearch is running.
         :param chunk_size: Size of the chunk to be loaded at once.
         """
-        self.client = Elasticsearch(hosts=hosts)
+
+        try:
+            self.client = Elasticsearch(hosts=hosts)
+        except exceptions.ElasticsearchException as e:
+            module_logger.error('Error initializing Elasticsearch client: %s', e)
+            raise
         self.chunk_size = chunk_size
 
     def init(self, index_name: str):

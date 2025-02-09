@@ -17,6 +17,16 @@ class ShortFilm:
     type: str = ''
     rating: float = None
 
+    def __post_init__(self):
+        if not isinstance(self.id, str):
+            raise TypeError('id must be a string')
+        if not isinstance(self.title, str):
+            raise TypeError('title must be a string')
+        if not isinstance(self.type, str):
+            raise TypeError('type must be a string')
+        if self.rating is not None and not isinstance(self.rating, float):
+            raise TypeError('rating must be a float or None')
+
 
 @dataclass
 class ShortPerson:
