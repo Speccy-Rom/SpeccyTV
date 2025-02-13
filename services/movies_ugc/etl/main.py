@@ -27,16 +27,12 @@ def init_consumer(conf: ETLConfigs) -> list[KafkaConsumer]:
         return consumers_list
 
     except NoBrokersAvailable as e:
-        conf.logger.info(
-            "Error: Брокер Kafka не обнаружен, ожидание брокера..."
-        )
+        conf.logger.info("Error: Брокер Kafka не обнаружен, ожидание брокера...")
         time.sleep(15)
-        raise NoBrokersAvailable from e
+        raise
 
     except ValueError as e:
-        conf.logger.info(
-            "Error: Брокер Kafka еще не запустился, ожидание брокера..."
-        )
+        conf.logger.info("Error: Брокер Kafka еще не запустился, ожидание брокера...")
         time.sleep(15)
         raise NoBrokersAvailable from e
 
@@ -60,6 +56,7 @@ if __name__ == '__main__':
         click_manager=click_manager,
         transformer=transformer,
         configs=configs.click,
-        logger=configs.logger)
+        logger=configs.logger
+    )
 
     loader.run()
